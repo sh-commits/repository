@@ -200,7 +200,7 @@ renderLegend();
 // ---- resize ----
 function resize(){
   const w = host.clientWidth, h = host.clientHeight;
-  renderer.setSize(w, h, false);
+  renderer.setSize(w, h);
   camera.aspect = w/h;
   camera.updateProjectionMatrix();
 }
