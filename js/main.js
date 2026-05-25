@@ -53,7 +53,23 @@ function fibonacciTargets(n){
     const dir = new THREE.Vector3(Math.cos(th)*r, y, Math.sin(th)*r);
     pts.push(chamber.surfacePointForDir(dir));
   }
-  return pts;
+  // greedy nearest-neighbour ordering so the catheter drags smoothly across
+  // the surface (small hops) rather than jumping across the chamber
+  const ordered = [];
+  const used = new Array(pts.length).fill(false);
+  let cur = mapCath.tip.clone();
+  for(let k=0;k<pts.length;k++){
+    let best = -1, bd = Infinity;
+    for(let i=0;i<pts.length;i++){
+      if(used[i]) continue;
+      const d = cur.distanceToSquared(pts[i]);
+      if(d < bd){ bd = d; best = i; }
+    }
+    used[best] = true;
+    ordered.push(pts[best]);
+    cur = pts[best];
+  }
+  return ordered;
 }
 
 function startAutoMap(){

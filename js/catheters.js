@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 // Fixed transseptal-style entry point (lower/posterior aspect of the chamber).
 export const ENTRY = new THREE.Vector3(4, -26, 20);
+const _v3 = new THREE.Vector3();
 
 function buildShaft(material){
   // placeholder geometry; rebuilt each frame to follow the tip
@@ -51,10 +52,15 @@ export class MappingCatheter {
   setTarget(v){ this.target.copy(v); }
 
   update(dt){
-    const step = Math.min(1, this.speed * dt * 1.6);
-    this.tip.lerp(this.target, step);
+    const v = 95 * this.speed;                 // constant velocity (units/sec)
+    const d = _v3.subVectors(this.target, this.tip);
+    const dist = d.length();
+    if(dist < 0.6 || v*dt >= dist){
+      this.tip.copy(this.target); this._layout(); return true;
+    }
+    this.tip.addScaledVector(d.multiplyScalar(1/dist), v*dt);
     this._layout();
-    return this.tip.distanceTo(this.target) < 0.6;
+    return false;
   }
 
   _layout(){
@@ -98,8 +104,14 @@ export class AblationCatheter {
   fireRF(seconds=2.2){ this.ablating = seconds; }
 
   update(dt){
-    const step = Math.min(1, dt * 2.2);
-    this.tip.lerp(this.target, step);
+    const v = 150;                             // units/sec
+    const d = _v3.subVectors(this.target, this.tip);
+    const dist = d.length();
+    if(dist > 0.6 && v*dt < dist){
+      this.tip.addScaledVector(d.multiplyScalar(1/dist), v*dt);
+    } else {
+      this.tip.copy(this.target);
+    }
     this._layout();
 
     const m = this.tipElectrode.material;
