@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EP MapSim — Cardiac Mapping &amp; Ablation Simulator</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.js",
+    "three/addons/": "./vendor/three/addons/"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="disclaimer-bar">
+    SIMULATION ONLY — NOT A MEDICAL DEVICE. Synthetic data. NOT for clinical use, diagnosis, or treatment of any patient.
+  </div>
+
+  <header id="topbar">
+    <div class="brand">
+      <span class="logo">EP&nbsp;MapSim</span>
+      <span class="sub">Cardiac Electroanatomic Mapping &amp; Ablation Trainer</span>
+    </div>
+    <div class="modes" role="group" aria-label="Interaction mode">
+      <button data-mode="navigate" class="mode active">Navigate</button>
+      <button data-mode="map" class="mode">Map</button>
+      <button data-mode="ablate" class="mode">Ablate</button>
+    </div>
+  </header>
+
+  <main id="layout">
+    <section id="viewport">
+      <div id="canvas-host"></div>
+      <div id="mode-hint" class="hint">Drag to rotate · scroll to zoom</div>
+      <div id="case-banner" class="case-banner">Simulated case: focal atrial tachycardia (synthetic)</div>
+    </section>
+
+    <aside id="sidebar">
+      <div class="panel">
+        <h3>Map type</h3>
+        <select id="map-type">
+          <option value="activation">Local Activation Time (LAT)</option>
+          <option value="voltage">Bipolar Voltage</option>
+        </select>
+        <div id="legend" class="legend"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Mapping</h3>
+        <button id="auto-map" class="btn primary">▶ Start auto-map</button>
+        <label class="row">Speed
+          <input id="map-speed" type="range" min="0.2" max="3" step="0.1" value="1.2" />
+        </label>
+        <button id="clear-map" class="btn">Clear map</button>
+        <div class="stat"><span>Points collected</span><b id="point-count">0</b></div>
+      </div>
+
+      <div class="panel">
+        <h3>Ablation</h3>
+        <p class="muted">Select <b>Ablate</b> mode, then click the chamber to deliver a simulated RF lesion.</p>
+        <div class="stat"><span>Lesions</span><b id="lesion-count">0</b></div>
+        <button id="clear-lesions" class="btn">Clear lesions</button>
+      </div>
+
+      <div class="panel">
+        <h3>Display</h3>
+        <label class="row check"><input type="checkbox" id="show-catheters" checked /> Show catheters</label>
+        <label class="row check"><input type="checkbox" id="show-shell" checked /> Translucent shell</label>
+        <button id="reset-case" class="btn">New simulated case</button>
+      </div>
+
+      <div class="panel readout">
+        <h3>Catheter readout</h3>
+        <div class="stat"><span>Local LAT</span><b id="ro-lat">— ms</b></div>
+        <div class="stat"><span>Local voltage</span><b id="ro-volt">— mV</b></div>
+        <div class="stat"><span>Tissue</span><b id="ro-tissue">—</b></div>
+      </div>
+    </aside>
+  </main>
+
+  <section id="egm-strip">
+    <div class="egm-head">Intracardiac electrograms <span class="muted">(simulated · 100&nbsp;bpm)</span></div>
+    <canvas id="egm-canvas"></canvas>
+  </section>
+
+  <footer id="footer">
+    EP MapSim is an educational simulator inspired by 3D EP mapping systems. It contains no patient data and is
+    <b>not</b> cleared for any medical use. All signals and anatomy are synthetic.
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
